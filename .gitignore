@@ -1,0 +1,35 @@
+# Build outputs
+Debug/
+Release/
+build/
+
+# Object and dependency files
+*.o
+*.obj
+*.d
+*.su
+*.cyclo
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.lst
+
+# Static libraries and archives
+*.a
+*.lib
+
+# STM32CubeIDE / Eclipse local files
+.metadata/
+.recommenders/
+.settings/
+*.launch
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
