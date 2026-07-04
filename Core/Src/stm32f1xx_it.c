@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "motor_player.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,9 +58,7 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
-extern volatile uint32_t step_acc;
-extern volatile uint32_t step_inc;
-extern volatile uint8_t step_state;
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -209,7 +208,29 @@ void TIM2_IRQHandler(void)
     if(LL_TIM_IsActiveFlag_UPDATE(TIM2))
     {
         LL_TIM_ClearFlag_UPDATE(TIM2);
-        LL_GPIO_TogglePin(GPIOA, LL_GPIO_PIN_0);
+
+        for(UINT8 i = 0; i < MOTOR_COUNT; i++)
+        {
+            if(motor[i].inc == 0)
+                continue;
+
+            UINT32 old = motor[i].acc;
+            motor[i].acc += motor[i].inc;
+
+            if(motor[i].acc < old)
+            {
+                if(motor[i].state)
+                {
+                    LL_GPIO_ResetOutputPin(motor[i].step_port, motor[i].step_pin);
+                    motor[i].state = 0;
+                }
+                else
+                {
+                    LL_GPIO_SetOutputPin(motor[i].step_port, motor[i].step_pin);
+                    motor[i].state = 1;
+                }
+            }
+        }
     }
   /* USER CODE END TIM2_IRQn 0 */
   /* USER CODE BEGIN TIM2_IRQn 1 */
